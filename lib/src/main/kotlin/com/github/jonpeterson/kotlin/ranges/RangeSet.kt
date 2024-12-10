@@ -373,7 +373,7 @@ abstract class RangeSet<T : Comparable<T>> : MutableSet<ClosedRange<T>>, Cloneab
      * @return new set containing missing values between the ranges of this set
      */
     fun gaps(): RangeSet<T> {
-        return if(ranges.isEmpty()) clone().apply { clear() } else difference(ranges.first.endInclusive..ranges.last.start)
+        return if(ranges.isEmpty()) clone().apply { clear() } else difference(ranges.first().endInclusive..ranges.last().start)
     }
 
     override fun iterator(): MutableIterator<ClosedRange<T>> = ranges.iterator()
@@ -394,5 +394,5 @@ abstract class RangeSet<T : Comparable<T>> : MutableSet<ClosedRange<T>>, Cloneab
 
     protected abstract fun empty(): RangeSet<T>
 
-    override abstract fun clone(): RangeSet<T>
+    abstract override fun clone(): RangeSet<T>
 }

@@ -42,7 +42,7 @@ class IntRangeSet : RangeSet<Int> {
 
     override fun clone(): RangeSet<Int> = IntRangeSet(this)
 
-    protected override fun empty(): IntRangeSet = IntRangeSet()
+    override fun empty(): IntRangeSet = IntRangeSet()
 }
 
 class LongRangeSet : RangeSet<Long> {
@@ -63,7 +63,7 @@ class LongRangeSet : RangeSet<Long> {
 
     override fun clone(): RangeSet<Long> = LongRangeSet(this)
 
-    protected override fun empty(): LongRangeSet = LongRangeSet()
+    override fun empty(): LongRangeSet = LongRangeSet()
 }
 
 class CharRangeSet : RangeSet<Char> {
@@ -84,5 +84,5 @@ class CharRangeSet : RangeSet<Char> {
 
     override fun clone(): RangeSet<Char> = CharRangeSet(this)
 
-    protected override fun empty(): CharRangeSet = CharRangeSet()
+    override fun empty(): CharRangeSet = CharRangeSet()
 }
