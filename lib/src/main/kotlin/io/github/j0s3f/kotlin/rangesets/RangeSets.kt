@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.jonpeterson.kotlin.ranges
+package io.github.j0s3f.kotlin.rangesets
 
 class IntRangeSet : RangeSet<Int> {
 
