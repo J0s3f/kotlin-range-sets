@@ -4,13 +4,13 @@ Implementation of set logic on the underlying values of Kotlin's Range classes.
 
 ## Compatibility
 
-Compiled for Java 6 and Kotlin 1.0.2.
+Compiled for Java 1 and Kotlin 2.0
 
 ## Getting Started with Gradle
 
 ```groovy
 dependencies {
-    compile 'com.github.jonpeterson:kotlin-range-sets:1.0.0'
+    compile 'io.github.j0s3f.kotlin:rangesets:1.0.1'
 }
 ```
 
@@ -18,9 +18,9 @@ dependencies {
 
 ```xml
 <dependency>
-    <groupId>com.github.jonpeterson</groupId>
-    <artifactId>kotlin-range-sets</artifactId>
-    <version>1.0.0</version>
+    <groupId>io.github.j0s3f.kotlin</groupId>
+    <artifactId>rangesets</artifactId>
+    <version>1.0.1</version>
 </dependency>
 ```
 

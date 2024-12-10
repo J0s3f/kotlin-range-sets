@@ -15,5 +15,3 @@ junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", vers
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version = "2.0.0" }
 dokka = { id = "org.jetbrains.dokka", version = "1.9.20" }
 license = { id = "com.github.hierynomus.license", version = "0.15.0" }
-release = { id = "net.researchgate.release", version = "3.0.2" }
-publish = { id = "com.vanniktech.maven.publish", version = "0.25.3" }
