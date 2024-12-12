@@ -4,7 +4,7 @@ Implementation of set logic on the underlying values of Kotlin's Range classes.
 
 ## Compatibility
 
-Compiled for Java 1 and Kotlin 2.0
+Compiled for Java 11 and Kotlin 2.0
 
 ## Getting Started with Gradle
 
