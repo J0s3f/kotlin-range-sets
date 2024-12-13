@@ -10,7 +10,7 @@ Compiled for Java 11 and Kotlin 2.0
 
 ```groovy
 dependencies {
-    compile 'io.github.j0s3f.kotlin:rangesets:1.0.1'
+    compile 'io.github.j0s3f.kotlin:rangesets:1.0.2'
 }
 ```
 
@@ -20,7 +20,7 @@ dependencies {
 <dependency>
     <groupId>io.github.j0s3f.kotlin</groupId>
     <artifactId>rangesets</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 ```
 
