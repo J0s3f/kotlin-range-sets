@@ -1,5 +1,17 @@
 import org.jreleaser.model.Active
 
+buildscript {
+    configurations.classpath {
+        resolutionStrategy {
+            // JReleaser and Spotless bundle different, binary-incompatible JGit versions on the
+            // shared plugin classpath (Spotless's newer JGit dropped org.eclipse.jgit.lib.GpgObjectSigner,
+            // which JReleaser's signing support needs) - pin to the version JReleaser expects.
+            // See https://github.com/jreleaser/jreleaser/issues/1846
+            force("org.eclipse.jgit:org.eclipse.jgit:5.13.5.202508271544-r")
+        }
+    }
+}
+
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
     alias(libs.plugins.kotlin.jvm)
