@@ -10,11 +10,12 @@ plugins {
     groovy
 
     alias(libs.plugins.dokka)
+    alias(libs.plugins.dokka.javadoc)
 
-    alias(libs.plugins.license)
+    alias(libs.plugins.spotless)
 
     id("maven-publish")
-    id("org.jreleaser") version "1.15.0"
+    id("org.jreleaser") version "1.25.0"
     id("signing")
 
 }
@@ -31,8 +32,8 @@ dependencies {
     // Use the JUnit 5 integration.
     testImplementation(libs.junit.jupiter.engine)
     // Use Spock
-    testImplementation("org.spockframework:spock-core:2.4-M4-groovy-4.0")
-    testImplementation("org.apache.groovy:groovy-all:4.0.24")
+    testImplementation("org.spockframework:spock-core:2.4-groovy-4.0")
+    testImplementation("org.apache.groovy:groovy-all:4.0.32")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
@@ -48,7 +49,7 @@ java {
 }
 
 val javadocJar = tasks.named<Jar>("javadocJar") {
-    from(tasks.named("dokkaJavadoc"))
+    from(tasks.named("dokkaGeneratePublicationJavadoc"))
 }
 
 tasks.jar {
@@ -57,15 +58,15 @@ tasks.jar {
     archiveClassifier.set("")
 }
 
-license {
-    include("**/*.kt")
-    include("**/*.groovy")
-    mapping(
-        mapOf(
-            "kt" to "SLASHSTAR_STYLE",
-            "groovy" to "SLASHSTAR_STYLE"
-        )
-    )
+spotless {
+    kotlin {
+        target("src/**/*.kt")
+        licenseHeaderFile(rootProject.file("config/license-header.txt"))
+    }
+    groovy {
+        target("src/**/*.groovy")
+        licenseHeaderFile(rootProject.file("config/license-header.txt"))
+    }
 }
 
 publishing {

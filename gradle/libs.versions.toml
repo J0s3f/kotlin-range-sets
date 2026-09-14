@@ -3,8 +3,9 @@
 
 [versions]
 commons-math3 = "3.6.1"
-guava = "33.2.1-jre"
-junit-jupiter-engine = "5.10.3"
+guava = "33.7.1-jre"
+junit-jupiter-engine = "5.14.4"
+dokka = "2.2.0"
 
 [libraries]
 commons-math3 = { module = "org.apache.commons:commons-math3", version.ref = "commons-math3" }
@@ -12,6 +13,7 @@ guava = { module = "com.google.guava:guava", version.ref = "guava" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter-engine" }
 
 [plugins]
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version = "2.0.0" }
-dokka = { id = "org.jetbrains.dokka", version = "1.9.20" }
-license = { id = "com.github.hierynomus.license", version = "0.15.0" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version = "2.4.20" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+dokka-javadoc = { id = "org.jetbrains.dokka-javadoc", version.ref = "dokka" }
+spotless = { id = "com.diffplug.spotless", version = "8.10.2" }
