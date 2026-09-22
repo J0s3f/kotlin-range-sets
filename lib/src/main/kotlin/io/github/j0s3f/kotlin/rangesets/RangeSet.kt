@@ -140,6 +140,32 @@ abstract class RangeSet<T : Comparable<T>> : MutableSet<ClosedRange<T>>, Cloneab
     }
 
     /**
+     * @return [decrementValue] of [value], or [value] itself if decrementing would underflow past the type's
+     * minimum value (signalled by either a thrown exception or a result that isn't actually smaller)
+     */
+    private fun expandDown(value: T): T {
+        val decremented = try {
+            decrementValue(value)
+        } catch (e: RuntimeException) {
+            return value
+        }
+        return if (decremented < value) decremented else value
+    }
+
+    /**
+     * @return [incrementValue] of [value], or [value] itself if incrementing would overflow past the type's
+     * maximum value (signalled by either a thrown exception or a result that isn't actually larger)
+     */
+    private fun expandUp(value: T): T {
+        val incremented = try {
+            incrementValue(value)
+        } catch (e: RuntimeException) {
+            return value
+        }
+        return if (incremented > value) incremented else value
+    }
+
+    /**
      * Adds range of values to the set; addition set logic.
      *
      * Examples:
@@ -153,8 +179,11 @@ abstract class RangeSet<T : Comparable<T>> : MutableSet<ClosedRange<T>>, Cloneab
      * @return whether any values were added
      */
     override fun add(element: ClosedRange<T>): Boolean {
-        // Expand the range by 1 in each direction when computing the overlap to enable coalescing with adjacent ranges.
-        val subRanges = overlap(decrementValue(element.start), incrementValue(element.endInclusive))
+        // Expand the range by 1 in each direction when computing the overlap to enable coalescing with adjacent
+        // ranges - but only where that's safe. At the type's absolute minimum/maximum there is nothing that
+        // could be adjacent from that direction, and decrementValue/incrementValue may throw there (e.g.
+        // LocalDate.MIN) or silently wrap around (e.g. Int.MIN_VALUE), so fall back to the unexpanded bound.
+        val subRanges = overlap(expandDown(element.start), expandUp(element.endInclusive))
         if (subRanges.isEmpty()) {
             ranges.add(element)
         } else {

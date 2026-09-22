@@ -28,7 +28,6 @@ package io.github.j0s3f.kotlin.rangesets
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import java.time.DateTimeException
 import java.time.LocalDate
 
 @Unroll
@@ -270,19 +269,25 @@ class LocalDateRangeSetTest extends Specification {
         set as List == [kotlin.ranges.RangesKt.rangeTo(LocalDate.of(2023, 2, 26), LocalDate.of(2023, 3, 2))]
     }
 
-    def 'throws when adding a range that would decrement past the minimum date'() {
-        when:
-        new LocalDateRangeSet().add(kotlin.ranges.RangesKt.rangeTo(LocalDate.MIN, LocalDate.of(2024, 1, 5)))
+    def 'can add a range starting at the minimum date'() {
+        expect:
+        def set = new LocalDateRangeSet()
+        set.add(kotlin.ranges.RangesKt.rangeTo(LocalDate.MIN, LocalDate.of(2024, 1, 5)))
+        set as List == [kotlin.ranges.RangesKt.rangeTo(LocalDate.MIN, LocalDate.of(2024, 1, 5))]
 
-        then:
-        thrown(DateTimeException)
+        // and still coalesces with an adjacent range
+        set.add(kotlin.ranges.RangesKt.rangeTo(LocalDate.of(2024, 1, 6), LocalDate.of(2024, 1, 10)))
+        set as List == [kotlin.ranges.RangesKt.rangeTo(LocalDate.MIN, LocalDate.of(2024, 1, 10))]
     }
 
-    def 'throws when adding a range that would increment past the maximum date'() {
-        when:
-        new LocalDateRangeSet().add(kotlin.ranges.RangesKt.rangeTo(LocalDate.of(2024, 1, 5), LocalDate.MAX))
+    def 'can add a range ending at the maximum date'() {
+        expect:
+        def set = new LocalDateRangeSet()
+        set.add(kotlin.ranges.RangesKt.rangeTo(LocalDate.of(2024, 1, 5), LocalDate.MAX))
+        set as List == [kotlin.ranges.RangesKt.rangeTo(LocalDate.of(2024, 1, 5), LocalDate.MAX)]
 
-        then:
-        thrown(DateTimeException)
+        // and still coalesces with an adjacent range
+        set.add(kotlin.ranges.RangesKt.rangeTo(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 1, 4)))
+        set as List == [kotlin.ranges.RangesKt.rangeTo(LocalDate.of(2024, 1, 1), LocalDate.MAX)]
     }
 }

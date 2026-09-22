@@ -27,7 +27,6 @@ package io.github.j0s3f.kotlin.rangesets
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -146,16 +145,24 @@ class UIntRangeSetTest {
     }
 
     @Test
-    fun throwsWhenAddingARangeThatWouldDecrementPastTheMinimumValue() {
-        assertFailsWith<IllegalArgumentException> {
-            UIntRangeSet().add(UInt.MIN_VALUE..5u)
-        }
+    fun canAddARangeStartingAtTheMinimumValue() {
+        val set = UIntRangeSet()
+        set.add(UInt.MIN_VALUE..5u)
+        assertEquals(listOf(UInt.MIN_VALUE..5u), set.toList())
+
+        // and still coalesces with an adjacent range
+        set.add(6u..10u)
+        assertEquals(listOf(UInt.MIN_VALUE..10u), set.toList())
     }
 
     @Test
-    fun throwsWhenAddingARangeThatWouldIncrementPastTheMaximumValue() {
-        assertFailsWith<IllegalArgumentException> {
-            UIntRangeSet().add(5u..UInt.MAX_VALUE)
-        }
+    fun canAddARangeEndingAtTheMaximumValue() {
+        val set = UIntRangeSet()
+        set.add(5u..UInt.MAX_VALUE)
+        assertEquals(listOf(5u..UInt.MAX_VALUE), set.toList())
+
+        // and still coalesces with an adjacent range
+        set.add(1u..4u)
+        assertEquals(listOf(1u..UInt.MAX_VALUE), set.toList())
     }
 }

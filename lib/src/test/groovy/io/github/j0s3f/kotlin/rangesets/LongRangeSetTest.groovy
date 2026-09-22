@@ -232,19 +232,25 @@ class LongRangeSetTest extends Specification {
         set.toList() == [new kotlin.ranges.LongRange(belowInt, aboveInt + 5)]
     }
 
-    def 'throws when adding a range that would decrement past the minimum value'() {
-        when:
-        new LongRangeSet().add(new kotlin.ranges.LongRange(Long.MIN_VALUE, 5L))
+    def 'can add a range starting at the minimum value'() {
+        expect:
+        def set = new LongRangeSet()
+        set.add(new kotlin.ranges.LongRange(Long.MIN_VALUE, 5L))
+        set as List == [new kotlin.ranges.LongRange(Long.MIN_VALUE, 5L)]
 
-        then:
-        thrown(IllegalArgumentException)
+        // and still coalesces with an adjacent range
+        set.add(new kotlin.ranges.LongRange(6L, 10L))
+        set as List == [new kotlin.ranges.LongRange(Long.MIN_VALUE, 10L)]
     }
 
-    def 'throws when adding a range that would increment past the maximum value'() {
-        when:
-        new LongRangeSet().add(new kotlin.ranges.LongRange(5L, Long.MAX_VALUE))
+    def 'can add a range ending at the maximum value'() {
+        expect:
+        def set = new LongRangeSet()
+        set.add(new kotlin.ranges.LongRange(5L, Long.MAX_VALUE))
+        set as List == [new kotlin.ranges.LongRange(5L, Long.MAX_VALUE)]
 
-        then:
-        thrown(IllegalArgumentException)
+        // and still coalesces with an adjacent range
+        set.add(new kotlin.ranges.LongRange(1L, 4L))
+        set as List == [new kotlin.ranges.LongRange(1L, Long.MAX_VALUE)]
     }
 }

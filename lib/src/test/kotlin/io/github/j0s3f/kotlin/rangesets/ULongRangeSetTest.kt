@@ -27,7 +27,6 @@ package io.github.j0s3f.kotlin.rangesets
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -146,16 +145,24 @@ class ULongRangeSetTest {
     }
 
     @Test
-    fun throwsWhenAddingARangeThatWouldDecrementPastTheMinimumValue() {
-        assertFailsWith<IllegalArgumentException> {
-            ULongRangeSet().add(ULong.MIN_VALUE..5uL)
-        }
+    fun canAddARangeStartingAtTheMinimumValue() {
+        val set = ULongRangeSet()
+        set.add(ULong.MIN_VALUE..5uL)
+        assertEquals(listOf(ULong.MIN_VALUE..5uL), set.toList())
+
+        // and still coalesces with an adjacent range
+        set.add(6uL..10uL)
+        assertEquals(listOf(ULong.MIN_VALUE..10uL), set.toList())
     }
 
     @Test
-    fun throwsWhenAddingARangeThatWouldIncrementPastTheMaximumValue() {
-        assertFailsWith<IllegalArgumentException> {
-            ULongRangeSet().add(5uL..ULong.MAX_VALUE)
-        }
+    fun canAddARangeEndingAtTheMaximumValue() {
+        val set = ULongRangeSet()
+        set.add(5uL..ULong.MAX_VALUE)
+        assertEquals(listOf(5uL..ULong.MAX_VALUE), set.toList())
+
+        // and still coalesces with an adjacent range
+        set.add(1uL..4uL)
+        assertEquals(listOf(1uL..ULong.MAX_VALUE), set.toList())
     }
 }

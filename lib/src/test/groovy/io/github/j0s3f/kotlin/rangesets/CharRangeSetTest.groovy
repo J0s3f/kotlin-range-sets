@@ -233,19 +233,25 @@ class CharRangeSetTest extends Specification {
         set as List == charRanges([['1', '1'], ['6', '6']])
     }
 
-    def 'throws when adding a range that would decrement past the minimum value'() {
-        when:
-        new CharRangeSet().add(new kotlin.ranges.CharRange((char) 0, 'e' as char))
+    def 'can add a range starting at the minimum value'() {
+        expect:
+        def set = new CharRangeSet()
+        set.add(new kotlin.ranges.CharRange((char) 0, 'e' as char))
+        set as List == [new kotlin.ranges.CharRange((char) 0, 'e' as char)]
 
-        then:
-        thrown(IllegalArgumentException)
+        // and still coalesces with an adjacent range
+        set.add(new kotlin.ranges.CharRange('f' as char, 'j' as char))
+        set as List == [new kotlin.ranges.CharRange((char) 0, 'j' as char)]
     }
 
-    def 'throws when adding a range that would increment past the maximum value'() {
-        when:
-        new CharRangeSet().add(new kotlin.ranges.CharRange('a' as char, Character.MAX_VALUE))
+    def 'can add a range ending at the maximum value'() {
+        expect:
+        def set = new CharRangeSet()
+        set.add(new kotlin.ranges.CharRange('a' as char, Character.MAX_VALUE))
+        set as List == [new kotlin.ranges.CharRange('a' as char, Character.MAX_VALUE)]
 
-        then:
-        thrown(IllegalArgumentException)
+        // and still coalesces with an adjacent range ('`' immediately precedes 'a')
+        set.add(new kotlin.ranges.CharRange('Z' as char, '`' as char))
+        set as List == [new kotlin.ranges.CharRange('Z' as char, Character.MAX_VALUE)]
     }
 }

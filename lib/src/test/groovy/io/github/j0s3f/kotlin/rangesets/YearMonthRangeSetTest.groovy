@@ -28,7 +28,6 @@ package io.github.j0s3f.kotlin.rangesets
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import java.time.DateTimeException
 import java.time.Year
 import java.time.YearMonth
 
@@ -252,19 +251,25 @@ class YearMonthRangeSetTest extends Specification {
         set.gaps().toList() == [kotlin.ranges.RangesKt.rangeTo(YearMonth.of(2023, 12), YearMonth.of(2023, 12))]
     }
 
-    def 'throws when adding a range that would decrement past the minimum year-month'() {
-        when:
-        new YearMonthRangeSet().add(kotlin.ranges.RangesKt.rangeTo(YearMonth.of(Year.MIN_VALUE, 1), YearMonth.of(2024, 5)))
+    def 'can add a range starting at the minimum year-month'() {
+        expect:
+        def set = new YearMonthRangeSet()
+        set.add(kotlin.ranges.RangesKt.rangeTo(YearMonth.of(Year.MIN_VALUE, 1), YearMonth.of(2024, 5)))
+        set as List == [kotlin.ranges.RangesKt.rangeTo(YearMonth.of(Year.MIN_VALUE, 1), YearMonth.of(2024, 5))]
 
-        then:
-        thrown(DateTimeException)
+        // and still coalesces with an adjacent range
+        set.add(kotlin.ranges.RangesKt.rangeTo(YearMonth.of(2024, 6), YearMonth.of(2024, 8)))
+        set as List == [kotlin.ranges.RangesKt.rangeTo(YearMonth.of(Year.MIN_VALUE, 1), YearMonth.of(2024, 8))]
     }
 
-    def 'throws when adding a range that would increment past the maximum year-month'() {
-        when:
-        new YearMonthRangeSet().add(kotlin.ranges.RangesKt.rangeTo(YearMonth.of(2024, 5), YearMonth.of(Year.MAX_VALUE, 12)))
+    def 'can add a range ending at the maximum year-month'() {
+        expect:
+        def set = new YearMonthRangeSet()
+        set.add(kotlin.ranges.RangesKt.rangeTo(YearMonth.of(2024, 5), YearMonth.of(Year.MAX_VALUE, 12)))
+        set as List == [kotlin.ranges.RangesKt.rangeTo(YearMonth.of(2024, 5), YearMonth.of(Year.MAX_VALUE, 12))]
 
-        then:
-        thrown(DateTimeException)
+        // and still coalesces with an adjacent range
+        set.add(kotlin.ranges.RangesKt.rangeTo(YearMonth.of(2024, 1), YearMonth.of(2024, 4)))
+        set as List == [kotlin.ranges.RangesKt.rangeTo(YearMonth.of(2024, 1), YearMonth.of(Year.MAX_VALUE, 12))]
     }
 }

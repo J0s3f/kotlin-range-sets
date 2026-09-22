@@ -216,19 +216,27 @@ class RangeSetTest extends Specification {
         [7..10, 1..3, 15..15] | true
     }
 
-    def 'throws when adding a range that would decrement past the minimum value'() {
-        when:
-        new IntRangeSet().add(groovyToKotlinRange(Integer.MIN_VALUE..5))
+    def 'can add a range starting at the minimum value'() {
+        expect:
+        // Integer.MIN_VALUE..5 can't be built as a Groovy IntRange literal: Groovy eagerly validates that a
+        // range fits within Integer.MAX_VALUE elements, and this one doesn't. Construct the Kotlin range directly.
+        def set = new IntRangeSet()
+        set.add(new kotlin.ranges.IntRange(Integer.MIN_VALUE, 5))
+        set as List == [new kotlin.ranges.IntRange(Integer.MIN_VALUE, 5)]
 
-        then:
-        thrown(IllegalArgumentException)
+        // and still coalesces with an adjacent range
+        set.add(groovyToKotlinRange(6..10))
+        set as List == [new kotlin.ranges.IntRange(Integer.MIN_VALUE, 10)]
     }
 
-    def 'throws when adding a range that would increment past the maximum value'() {
-        when:
-        new IntRangeSet().add(groovyToKotlinRange(5..Integer.MAX_VALUE))
+    def 'can add a range ending at the maximum value'() {
+        expect:
+        def set = new IntRangeSet()
+        set.add(new kotlin.ranges.IntRange(5, Integer.MAX_VALUE))
+        set as List == [new kotlin.ranges.IntRange(5, Integer.MAX_VALUE)]
 
-        then:
-        thrown(IllegalArgumentException)
+        // and still coalesces with an adjacent range
+        set.add(groovyToKotlinRange(1..4))
+        set as List == [new kotlin.ranges.IntRange(1, Integer.MAX_VALUE)]
     }
 }
