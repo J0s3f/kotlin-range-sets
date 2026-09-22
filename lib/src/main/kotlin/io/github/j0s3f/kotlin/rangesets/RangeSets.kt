@@ -175,3 +175,24 @@ class UIntRangeSet : RangeSet<UInt> {
 
     override fun empty(): UIntRangeSet = UIntRangeSet()
 }
+
+class ULongRangeSet : RangeSet<ULong> {
+
+    constructor() : super()
+
+    constructor(ranges: List<ULongRange>) : super(ranges)
+
+    constructor(vararg ranges: ULongRange) : this(ranges.asList())
+
+    private constructor(rangeSet: ULongRangeSet) : super(rangeSet)
+
+    override fun createRange(start: ULong, endInclusive: ULong): ULongRange = start..endInclusive
+
+    override fun incrementValue(value: ULong): ULong = value + 1uL
+
+    override fun decrementValue(value: ULong): ULong = value - 1uL
+
+    override fun clone(): RangeSet<ULong> = ULongRangeSet(this)
+
+    override fun empty(): ULongRangeSet = ULongRangeSet()
+}
