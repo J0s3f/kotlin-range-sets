@@ -25,6 +25,8 @@
 
 package io.github.j0s3f.kotlin.rangesets
 
+import java.math.BigInteger
+
 class IntRangeSet : RangeSet<Int> {
 
     constructor() : super()
@@ -86,4 +88,25 @@ class CharRangeSet : RangeSet<Char> {
     override fun clone(): RangeSet<Char> = CharRangeSet(this)
 
     override fun empty(): CharRangeSet = CharRangeSet()
+}
+
+class BigIntegerRangeSet : RangeSet<BigInteger> {
+
+    constructor() : super()
+
+    constructor(ranges: List<ClosedRange<BigInteger>>) : super(ranges)
+
+    constructor(vararg ranges: ClosedRange<BigInteger>) : this(ranges.asList())
+
+    private constructor(rangeSet: BigIntegerRangeSet) : super(rangeSet)
+
+    override fun createRange(start: BigInteger, endInclusive: BigInteger): ClosedRange<BigInteger> = start..endInclusive
+
+    override fun incrementValue(value: BigInteger): BigInteger = value + BigInteger.ONE
+
+    override fun decrementValue(value: BigInteger): BigInteger = value - BigInteger.ONE
+
+    override fun clone(): RangeSet<BigInteger> = BigIntegerRangeSet(this)
+
+    override fun empty(): BigIntegerRangeSet = BigIntegerRangeSet()
 }
