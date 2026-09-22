@@ -154,3 +154,24 @@ class YearMonthRangeSet : RangeSet<YearMonth> {
 
     override fun empty(): YearMonthRangeSet = YearMonthRangeSet()
 }
+
+class UIntRangeSet : RangeSet<UInt> {
+
+    constructor() : super()
+
+    constructor(ranges: List<UIntRange>) : super(ranges)
+
+    constructor(vararg ranges: UIntRange) : this(ranges.asList())
+
+    private constructor(rangeSet: UIntRangeSet) : super(rangeSet)
+
+    override fun createRange(start: UInt, endInclusive: UInt): UIntRange = start..endInclusive
+
+    override fun incrementValue(value: UInt): UInt = value + 1u
+
+    override fun decrementValue(value: UInt): UInt = value - 1u
+
+    override fun clone(): RangeSet<UInt> = UIntRangeSet(this)
+
+    override fun empty(): UIntRangeSet = UIntRangeSet()
+}
