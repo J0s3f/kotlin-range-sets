@@ -384,7 +384,11 @@ abstract class RangeSet<T : Comparable<T>> : MutableSet<ClosedRange<T>>, Cloneab
     }
 
     override fun equals(other: Any?): Boolean {
-        return this === other || (other is RangeSet<*> && ranges == other.ranges)
+        // ranges.equals(other.ranges) can't be used here: both are TreeSets ordered by the overlap-based
+        // comparator above, and TreeSet's equals()/contains() are comparator-based rather than element
+        // equals()-based, so two sets holding different but merely overlapping ranges would incorrectly
+        // compare as equal. Comparing the sorted contents as lists compares actual range equality instead.
+        return this === other || (other is RangeSet<*> && ranges.toList() == other.ranges.toList())
     }
 
     protected abstract fun createRange(start: T, endInclusive: T): ClosedRange<T>
