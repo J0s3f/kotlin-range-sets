@@ -28,6 +28,7 @@ package io.github.j0s3f.kotlin.rangesets
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import java.time.DateTimeException
 import java.time.LocalDate
 
 @Unroll
@@ -267,5 +268,21 @@ class LocalDateRangeSetTest extends Specification {
         set.add(kotlin.ranges.RangesKt.rangeTo(LocalDate.of(2023, 2, 26), LocalDate.of(2023, 2, 28)))
         set.add(kotlin.ranges.RangesKt.rangeTo(LocalDate.of(2023, 3, 1), LocalDate.of(2023, 3, 2)))
         set as List == [kotlin.ranges.RangesKt.rangeTo(LocalDate.of(2023, 2, 26), LocalDate.of(2023, 3, 2))]
+    }
+
+    def 'throws when adding a range that would decrement past the minimum date'() {
+        when:
+        new LocalDateRangeSet().add(kotlin.ranges.RangesKt.rangeTo(LocalDate.MIN, LocalDate.of(2024, 1, 5)))
+
+        then:
+        thrown(DateTimeException)
+    }
+
+    def 'throws when adding a range that would increment past the maximum date'() {
+        when:
+        new LocalDateRangeSet().add(kotlin.ranges.RangesKt.rangeTo(LocalDate.of(2024, 1, 5), LocalDate.MAX))
+
+        then:
+        thrown(DateTimeException)
     }
 }

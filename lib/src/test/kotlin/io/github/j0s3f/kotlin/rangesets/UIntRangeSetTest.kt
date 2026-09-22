@@ -27,6 +27,7 @@ package io.github.j0s3f.kotlin.rangesets
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -142,5 +143,19 @@ class UIntRangeSetTest {
         // adjacent huge ranges are still coalesced
         set.add((aboveIntMax + 6u)..(UInt.MAX_VALUE - 1u))
         assertEquals(listOf(aboveIntMax..(UInt.MAX_VALUE - 1u)), set.toList())
+    }
+
+    @Test
+    fun throwsWhenAddingARangeThatWouldDecrementPastTheMinimumValue() {
+        assertFailsWith<IllegalArgumentException> {
+            UIntRangeSet().add(UInt.MIN_VALUE..5u)
+        }
+    }
+
+    @Test
+    fun throwsWhenAddingARangeThatWouldIncrementPastTheMaximumValue() {
+        assertFailsWith<IllegalArgumentException> {
+            UIntRangeSet().add(5u..UInt.MAX_VALUE)
+        }
     }
 }

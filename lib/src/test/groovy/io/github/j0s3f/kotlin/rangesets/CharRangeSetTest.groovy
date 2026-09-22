@@ -232,4 +232,20 @@ class CharRangeSetTest extends Specification {
         set.retain(charRange('1', '6'))
         set as List == charRanges([['1', '1'], ['6', '6']])
     }
+
+    def 'throws when adding a range that would decrement past the minimum value'() {
+        when:
+        new CharRangeSet().add(new kotlin.ranges.CharRange((char) 0, 'e' as char))
+
+        then:
+        thrown(IllegalArgumentException)
+    }
+
+    def 'throws when adding a range that would increment past the maximum value'() {
+        when:
+        new CharRangeSet().add(new kotlin.ranges.CharRange('a' as char, Character.MAX_VALUE))
+
+        then:
+        thrown(IllegalArgumentException)
+    }
 }

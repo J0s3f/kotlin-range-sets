@@ -215,4 +215,20 @@ class RangeSetTest extends Specification {
         [2..3, 7..10, 15..15] | false
         [7..10, 1..3, 15..15] | true
     }
+
+    def 'throws when adding a range that would decrement past the minimum value'() {
+        when:
+        new IntRangeSet().add(groovyToKotlinRange(Integer.MIN_VALUE..5))
+
+        then:
+        thrown(IllegalArgumentException)
+    }
+
+    def 'throws when adding a range that would increment past the maximum value'() {
+        when:
+        new IntRangeSet().add(groovyToKotlinRange(5..Integer.MAX_VALUE))
+
+        then:
+        thrown(IllegalArgumentException)
+    }
 }

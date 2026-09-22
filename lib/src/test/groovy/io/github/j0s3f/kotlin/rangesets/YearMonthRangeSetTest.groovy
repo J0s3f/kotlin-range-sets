@@ -28,6 +28,8 @@ package io.github.j0s3f.kotlin.rangesets
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import java.time.DateTimeException
+import java.time.Year
 import java.time.YearMonth
 
 @Unroll
@@ -248,5 +250,21 @@ class YearMonthRangeSetTest extends Specification {
 
         // Dec 2023 is the one-month gap between them
         set.gaps().toList() == [kotlin.ranges.RangesKt.rangeTo(YearMonth.of(2023, 12), YearMonth.of(2023, 12))]
+    }
+
+    def 'throws when adding a range that would decrement past the minimum year-month'() {
+        when:
+        new YearMonthRangeSet().add(kotlin.ranges.RangesKt.rangeTo(YearMonth.of(Year.MIN_VALUE, 1), YearMonth.of(2024, 5)))
+
+        then:
+        thrown(DateTimeException)
+    }
+
+    def 'throws when adding a range that would increment past the maximum year-month'() {
+        when:
+        new YearMonthRangeSet().add(kotlin.ranges.RangesKt.rangeTo(YearMonth.of(2024, 5), YearMonth.of(Year.MAX_VALUE, 12)))
+
+        then:
+        thrown(DateTimeException)
     }
 }

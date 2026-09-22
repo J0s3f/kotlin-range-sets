@@ -231,4 +231,20 @@ class LongRangeSetTest extends Specification {
         set.add(new kotlin.ranges.LongRange(belowInt + 6, aboveInt - 1))
         set.toList() == [new kotlin.ranges.LongRange(belowInt, aboveInt + 5)]
     }
+
+    def 'throws when adding a range that would decrement past the minimum value'() {
+        when:
+        new LongRangeSet().add(new kotlin.ranges.LongRange(Long.MIN_VALUE, 5L))
+
+        then:
+        thrown(IllegalArgumentException)
+    }
+
+    def 'throws when adding a range that would increment past the maximum value'() {
+        when:
+        new LongRangeSet().add(new kotlin.ranges.LongRange(5L, Long.MAX_VALUE))
+
+        then:
+        thrown(IllegalArgumentException)
+    }
 }
