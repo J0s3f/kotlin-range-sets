@@ -185,7 +185,7 @@ abstract class RangeSet<T : Comparable<T>> : MutableSet<ClosedRange<T>>, Cloneab
      * @return whether any values were added
      */
     override fun addAll(elements: Collection<ClosedRange<T>>): Boolean {
-        return elements.map { add(it) }.any()
+        return elements.map { add(it) }.any { it }
     }
 
     /**
