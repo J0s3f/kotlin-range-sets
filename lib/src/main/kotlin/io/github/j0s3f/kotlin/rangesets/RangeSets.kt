@@ -26,6 +26,7 @@
 package io.github.j0s3f.kotlin.rangesets
 
 import java.math.BigInteger
+import java.time.LocalDate
 
 class IntRangeSet : RangeSet<Int> {
 
@@ -109,4 +110,25 @@ class BigIntegerRangeSet : RangeSet<BigInteger> {
     override fun clone(): RangeSet<BigInteger> = BigIntegerRangeSet(this)
 
     override fun empty(): BigIntegerRangeSet = BigIntegerRangeSet()
+}
+
+class LocalDateRangeSet : RangeSet<LocalDate> {
+
+    constructor() : super()
+
+    constructor(ranges: List<ClosedRange<LocalDate>>) : super(ranges)
+
+    constructor(vararg ranges: ClosedRange<LocalDate>) : this(ranges.asList())
+
+    private constructor(rangeSet: LocalDateRangeSet) : super(rangeSet)
+
+    override fun createRange(start: LocalDate, endInclusive: LocalDate): ClosedRange<LocalDate> = start..endInclusive
+
+    override fun incrementValue(value: LocalDate): LocalDate = value.plusDays(1)
+
+    override fun decrementValue(value: LocalDate): LocalDate = value.minusDays(1)
+
+    override fun clone(): RangeSet<LocalDate> = LocalDateRangeSet(this)
+
+    override fun empty(): LocalDateRangeSet = LocalDateRangeSet()
 }
