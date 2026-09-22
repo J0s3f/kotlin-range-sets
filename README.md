@@ -78,3 +78,54 @@ assert(set.difference(7..19) == IntRangeSet(9..12, 18..19))
 // created new range set with the gaps between the existing ranges
 assert(set.gaps() == IntRangeSet(9..12))
 ```
+
+### Other Range Set Types
+
+The same operations shown above (`add`, `remove`, `retain`, `difference`, `gaps`, ...) work identically for
+every range set type - only the type of value, and what counts as "adjacent" for coalescing ranges, differs.
+
+#### BigIntegerRangeSet
+
+Arbitrary-precision integer ranges, for values beyond what `Long` can hold.
+
+```kt
+val huge = BigInteger.TWO.pow(100)
+val set = BigIntegerRangeSet(huge..(huge + BigInteger.TEN))
+
+assert(set.containsValue(huge + BigInteger.valueOf(5)))
+```
+
+#### LocalDateRangeSet
+
+Date ranges, coalescing day by day - including across month and year boundaries.
+
+```kt
+val booked = LocalDateRangeSet(LocalDate.of(2024, 12, 28)..LocalDate.of(2024, 12, 31))
+
+// Jan 1 immediately follows Dec 31, so the two bookings merge into one range
+booked.add(LocalDate.of(2025, 1, 1)..LocalDate.of(2025, 1, 3))
+assert(booked == LocalDateRangeSet(LocalDate.of(2024, 12, 28)..LocalDate.of(2025, 1, 3)))
+```
+
+#### YearMonthRangeSet
+
+Month ranges, useful for billing or fiscal periods, coalescing month by month.
+
+```kt
+val active = YearMonthRangeSet(YearMonth.of(2024, 1)..YearMonth.of(2024, 6))
+
+active.add(YearMonth.of(2024, 7)..YearMonth.of(2024, 9))
+assert(active == YearMonthRangeSet(YearMonth.of(2024, 1)..YearMonth.of(2024, 9)))
+```
+
+#### UIntRangeSet / ULongRangeSet
+
+Unsigned integer ranges, for values that only ever go up to twice as high as their signed counterparts.
+
+```kt
+val aboveIntMax = UIntRangeSet(Int.MAX_VALUE.toUInt()..(Int.MAX_VALUE.toUInt() + 100u))
+assert(aboveIntMax.containsValue(Int.MAX_VALUE.toUInt() + 50u))
+
+val aboveLongMax = ULongRangeSet(Long.MAX_VALUE.toULong()..(Long.MAX_VALUE.toULong() + 100uL))
+assert(aboveLongMax.containsValue(Long.MAX_VALUE.toULong() + 50uL))
+```
