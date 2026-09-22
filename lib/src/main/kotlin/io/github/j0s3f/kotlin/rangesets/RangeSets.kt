@@ -27,6 +27,7 @@ package io.github.j0s3f.kotlin.rangesets
 
 import java.math.BigInteger
 import java.time.LocalDate
+import java.time.YearMonth
 
 class IntRangeSet : RangeSet<Int> {
 
@@ -131,4 +132,25 @@ class LocalDateRangeSet : RangeSet<LocalDate> {
     override fun clone(): RangeSet<LocalDate> = LocalDateRangeSet(this)
 
     override fun empty(): LocalDateRangeSet = LocalDateRangeSet()
+}
+
+class YearMonthRangeSet : RangeSet<YearMonth> {
+
+    constructor() : super()
+
+    constructor(ranges: List<ClosedRange<YearMonth>>) : super(ranges)
+
+    constructor(vararg ranges: ClosedRange<YearMonth>) : this(ranges.asList())
+
+    private constructor(rangeSet: YearMonthRangeSet) : super(rangeSet)
+
+    override fun createRange(start: YearMonth, endInclusive: YearMonth): ClosedRange<YearMonth> = start..endInclusive
+
+    override fun incrementValue(value: YearMonth): YearMonth = value.plusMonths(1)
+
+    override fun decrementValue(value: YearMonth): YearMonth = value.minusMonths(1)
+
+    override fun clone(): RangeSet<YearMonth> = YearMonthRangeSet(this)
+
+    override fun empty(): YearMonthRangeSet = YearMonthRangeSet()
 }
