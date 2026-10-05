@@ -78,6 +78,7 @@ abstract class RangeSet<T : Comparable<T>> : MutableSet<ClosedRange<T>>, Cloneab
 
     /**
      * Checks if the specified value is present in the set.
+     * Runs in O(log n), where n is the number of stored ranges.
      *
      * Examples:
      * ```
@@ -85,13 +86,18 @@ abstract class RangeSet<T : Comparable<T>> : MutableSet<ClosedRange<T>>, Cloneab
      * assert(IntRangeSet(listOf(5..8, 11..16)).contains(9) == false)
      * ```
      *
-     * @param value value to determine presence of
+     * @param value value to determine the presence of
      * @return whether the value is contained within the set
      */
-    fun containsValue(value: T): Boolean = ranges.any { it.contains(value) }
+    fun containsValue(value: T): Boolean = when (ranges.size) {
+        0 -> false
+        1 -> ranges.first().contains(value)
+        else -> ranges.contains(value..value)
+    }
 
     /**
      * Checks if all values in the specified range are present in the set.
+     * Runs in O(log n), where n is the number of stored ranges.
      *
      * Examples:
      * ```
@@ -99,15 +105,22 @@ abstract class RangeSet<T : Comparable<T>> : MutableSet<ClosedRange<T>>, Cloneab
      * assert(IntRangeSet(listOf(5..8, 11..16)).contains(6..12) == false)
      * ```
      *
-     * @param element range of values to determine presence of
+     * @param element range of values to determine the presence of
      * @return whether all values are all contained within the set
      */
     override fun contains(element: ClosedRange<T>): Boolean {
-        for(range in ranges)
-            if(element.start.compareTo(range.start) >= 0 && element.endInclusive.compareTo(range.endInclusive) <= 0)
-                return true
-
-        return false
+        val candidate = when (ranges.size) {
+            0 -> return false
+            1 -> ranges.first()
+            else -> {
+                // Nonempty queries reuse the supplied range as the tree probe. Reversed queries
+                // need a singleton probe to preserve the existing endpoint-enclosure behavior.
+                val probe = if (element.start > element.endInclusive) element.start..element.start else element
+                ranges.floor(probe) ?: return false
+            }
+        }
+        // The overlap comparator can find a partial overlap, so verify both enclosure bounds.
+        return element.start >= candidate.start && element.endInclusive <= candidate.endInclusive
     }
 
     /**
@@ -119,7 +132,7 @@ abstract class RangeSet<T : Comparable<T>> : MutableSet<ClosedRange<T>>, Cloneab
      * assert(IntRangeSet(listOf(5..8, 11..16)).containsAll(listOf(6..12, 14..15)) == false)
      * ```
      *
-     * @param elements ranges of values to determine presence of
+     * @param elements ranges of values to determine the presence of
      * @return whether all values are all contained within the set
      */
     override fun containsAll(elements: Collection<ClosedRange<T>>): Boolean = elements.all { contains(it) }
@@ -166,7 +179,7 @@ abstract class RangeSet<T : Comparable<T>> : MutableSet<ClosedRange<T>>, Cloneab
     }
 
     /**
-     * Adds range of values to the set; addition set logic.
+     * Adds a range of values to the set; addition set logic.
      *
      * Examples:
      * ```
